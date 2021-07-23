@@ -9,7 +9,7 @@ export default function Copyright() {
       {new Date().getFullYear()}
       {' - '}
       <Link color="inherit" to="#" target="_blank" rel="noopener noreferrer">
-        Gestante do Zap
+        SINUELO - Cássio Gamarra 
             </Link>{' '}
       {' - Todos os direitos reservados.'}
     </Typography>

@@ -1,7 +1,5 @@
-import React from 'react';
-import ToastAnimated, { showToast } from '../components/Toasts';
-import swal from 'sweetalert';
-
+import { showToast } from '../components/Toasts';
+import swal from 'sweetalert'; 
 
 //Alerts que recebem como parametro o callback da api.
 export const showSuccess = (cb) => showToast({

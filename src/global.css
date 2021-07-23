@@ -23,7 +23,7 @@ input, textarea {
     font-weight: 900;  
     letter-spacing: 0.025em;
     text-align: left;
-    color: #99ac8b;
+    color: #004725;
     line-height: 1.375;
     --transform-translate-x: 0;
     --transform-translate-y: 0;
@@ -38,7 +38,7 @@ input, textarea {
 }
 
 .highlight {
-    background-color: #99ac8b;
+    background-color: #004725;
     color: rgb(247, 250, 252);
     padding-left: 1rem;
     padding-right: 1rem;
@@ -54,12 +54,12 @@ input, textarea {
 }
 
 .textInit {
-    margin-top: 1rem;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 500;
-    line-height: 1.625;
-    color: #99ac8b;
+    margin-top: -3rem !important;
+    text-align: center !important;
+    font-size: 2rem !important;
+    font-weight: 500 !important;
+    line-height: 1.625 !important;
+    color: #004725;
 }
 
 .cardInit {
@@ -88,7 +88,7 @@ input, textarea {
 }
 
 .fontCardInit {
-    color: #FFFFFF;
+    color: #004725;
     font-weight: 500;
     --transform-translate-x: 0;
     --transform-translate-y: 0;
@@ -105,7 +105,7 @@ input, textarea {
     max-width: 1280px;
     margin: 0px;
     background-color: rgb(255, 255, 255);
-    color: #99ac8b;
+    color: #004725;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     display: flex;
     -moz-box-pack: center;
@@ -122,8 +122,8 @@ input, textarea {
 } 
 
 .btn-login {
-    background-color: #99ac8b;
-    color: #FFFFFF;
+    background-color: #004725 !important;
+    color: #FFFFFF !important;
     width: 100%;
     height: 50px;
     max-width: 100%;
@@ -228,3 +228,4 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+ 

@@ -10,10 +10,12 @@ import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 //Icons
-import HomeIcon from '@material-ui/icons/Home'; //Início  
-import SairIcon from '@material-ui/icons/PowerSettingsNew'; //Sair
+//import HomeIcon from '@material-ui/icons/Home'; //Início  
+//import SairIcon from '@material-ui/icons/ExitToApp'; //Sair
 import MenuIcon from '@material-ui/icons/Menu'; //Menu Mobile
-import CloseIcon from '@material-ui/icons/Close'; //Fechar 
+import CloseIcon from '@material-ui/icons/Close'; //Fechar  
+
+import { HomeIcon, PerfilIcon, SairIcon } from '../Icones/index';
 
 const drawerWidth = 240;
 
@@ -69,16 +71,17 @@ const useStyles = makeStyles(theme => ({
     },
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth, 
+    backgroundColor: "#004725"
   },
   btnSelected: {
-    color: '#99ac8b',
+    color: '#FFFFFF',
     borderWidth: 'thin',
     borderStyle: 'solid',
-    borderColor: '#99ac8b'
+    borderColor: '#FFFFFF'
   },
   btn: {
-    color: '#99ac8b',
+    color: '#FFFFFF',
   }
 }));
 
@@ -93,11 +96,11 @@ export default function Header(props) {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="sticky" style={{ backgroundColor: "#fff"}} elevation={0}>
+      <AppBar position="sticky" style={{ backgroundColor: "#004725"}} elevation={0}>
         <Toolbar>
           <Link to={'/'+window.location.href.split('/')[3]+'/home'} >
             <Typography className={classes.title} noWrap>
-              <img alt="Sul Services" src={require('../../assets/logo.png')} style={{ maxWidth: "3ch", marginTop: "0.3em" }} />
+              <img alt="SINUELO" src={require('../../assets/logo-header.png')} style={{ maxWidth: "8ch", marginTop: "0.3em" }} />
             </Typography>
           </Link>
           <div className={classes.grow} />
@@ -108,7 +111,13 @@ export default function Header(props) {
                 <p>INÍCIO</p>
               </Button>
             </Link>  
-            <Button style={{ color: "red" }} onClick={props.logout} >
+            <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
+              <Button className={window.location.href.split('/')[4] === 'perfil' ? classes.btnSelected : classes.btn}>
+                <PerfilIcon />
+                <p>PERFIL</p>
+              </Button>
+            </Link>  
+            <Button className={classes.btn} onClick={props.logout} >
               <SairIcon />
               <p>SAIR</p>
             </Button>
@@ -143,17 +152,22 @@ export default function Header(props) {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <Button onClick={handleDrawerToggle} className={classes.closeMenuButton} style={{ justifyContent: "left" }}>
-              <CloseIcon style={{ minWidth: '56px' }} />
-            </Button>
-            {/*Representante Master*/}
+            <Button onClick={handleDrawerToggle} className={classes.closeMenuButton}  >
+              <CloseIcon style={{ color: '#FFFFFF', minWidth: '56px' }} />
+            </Button>  
             <Link to={'/'+window.location.href.split('/')[3]+'/home'} >
               <Button className={window.location.href.split('/')[4] === 'home' ? classes.btnSelected : classes.btn} style={{ width: '100%', justifyContent: "left" }}>
-                <HomeIcon style={{ minWidth: '56px' }} />
+                <HomeIcon style={{ minWidth: '56px' }}/>
                 <p>INÍCIO</p>
               </Button>
             </Link>  
-            <Button style={{ color: "red", justifyContent: "left" }} onClick={props.logout} >
+            <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
+              <Button className={window.location.href.split('/')[4] === 'perfil' ? classes.btnSelected : classes.btn} style={{ width: '100%', justifyContent: "left" }}>
+                <PerfilIcon style={{ minWidth: '56px' }}/>
+                <p>PERFIL</p>
+              </Button>
+            </Link>  
+            <Button className={classes.btn} onClick={props.logout} style={{ width: '100%', justifyContent: "left" }}>
               <SairIcon style={{ minWidth: '56px' }} />
               <p>SAIR</p>
             </Button>

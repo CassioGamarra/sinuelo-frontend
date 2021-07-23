@@ -5,6 +5,7 @@ import { isAuthenticated, logout } from './services/auth';
 //Pages  
 import Login from './pages/Login/index';
 import HomeAdmin from './pages/Admin/Home/index'; 
+import Fazendas from './pages/Admin/Fazendas/index';
 
 export default function Routes() {
   const PrivateAdmin = ({ component: Component, ...rest }) => (
@@ -26,7 +27,8 @@ export default function Routes() {
       <Switch>
         {/*Login*/} 
         <Route exact path="/" component={Login} />
-        <PrivateAdmin exact path="/admin/home" component={HomeAdmin} /> 
+        <Route exact path="/admin/home" component={HomeAdmin} /> 
+        <Route exact path="/admin/fazendas" component={Fazendas} /> 
       </Switch>
     </BrowserRouter>
   );

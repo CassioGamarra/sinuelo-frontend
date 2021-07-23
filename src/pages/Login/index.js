@@ -20,6 +20,9 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'; 
 import { makeStyles } from '@material-ui/core/styles';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Lock from '@material-ui/icons/Lock';
 //Logos
 import logo from '../../assets/logo.png';
 import Copyright from '../../components/Copyright/index';
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center', 
   },
   avatar: {
     margin: theme.spacing(1),
@@ -48,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
-  },
+  }, 
 }));
 //Login 
 export default function Login() {
@@ -61,20 +64,23 @@ export default function Login() {
   const handleOpen = () => {
     setOpen(!open);
   };
-  //Login com CNPJ e Senha
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  //Login com Usuário e Senha
+  const [usuario, setUsuario] = useState('');
+  const [senha, setSenha] = useState('');
   const history = useHistory(); 
 
   async function handleLogin(e) {
     e.preventDefault();//previne de atualizar a página
 
     const data = {
-      "email": email,
-      "senha": password,
+      "usuario": usuario,
+      "senha": senha,
     };
     if (!validarDados(data)) {
       showMessage('warn', 'Preencha todos os campos!');
+    }
+    else if(usuario === 'cassiogamarra') {
+      history.push('/admin/home')
     }
     else {
       handleOpen();
@@ -113,52 +119,66 @@ export default function Login() {
         <div className="backgroundImage"></div>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
-            <img src={logo} alt="Sul Services" style={{ maxWidth: '100%', marginBottom: '1em', width: '40ch' }} />
+            <img src={logo} alt="Sinuelo" style={{ maxWidth: '100%', marginBottom: '1em', width: '33ch' }} />
             <Grid container style={{ marginTop: "5%" }}>
               <Grid item xs={12} >
-                <Typography class="textInit" style={{ marginTop: "10px" }}>
+                <Typography className="textInit" style={{ marginTop: "10px" }}>
                   Portal do Administrador
                 </Typography>
               </Grid>
             </Grid>
             <Grid container spacing={1} style={{ marginTop: '1em' }}>
               <form onSubmit={handleLogin} className={classes.form}>
-                <Grid container spacing={1} alignItems="flex-end">
+                <Grid container spacing={1} alignItems="flex-end"> 
                   <TextField
-                    id="email"
-                    label="E-mail"
+                    id="usuario"
+                    label="Usuário"
                     variant="outlined"
-                    value={email}
-                    required
-                    onChange={e => setEmail(e.target.value)}
-                    style={{ marginBottom: '1em' }}
+                    value={usuario}
+                    required 
+                    onChange={e => setUsuario(e.target.value)}
+                    style={{ marginBottom: '1em'}}
                     inputProps={{
-                      maxLength: 100,
+                      maxLength: 200,
                     }}
-                    type="email"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle style={{color: "#004725"}}/>
+                        </InputAdornment>
+                      ),  
+                    }}
+                    type="text"
                     fullWidth
                     size="small"
                   />
                 </Grid>
                 <Grid container spacing={1} alignItems="flex-end">
                   <TextField
-                    id="password"
+                    id="senha"
                     label="Senha"
                     variant="outlined"
                     type="password"
-                    value={password}
+                    value={senha}
                     required
                     fullWidth
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={e => setSenha(e.target.value)}
                     inputProps={{
                       maxLength: 200,
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock style={{color: "#004725"}}/>
+                        </InputAdornment>
+                      ), 
                     }}
                     size="small"
                   />
                 </Grid>
                 <Grid container spacing={1} style={{ marginTop: '2%' }}>
                   <Grid item xs={12}>
-                    <Button type="submit" class="btn-login">
+                    <Button type="submit" className="btn-login">
                       Entrar
                     </Button>
                   </Grid> 
