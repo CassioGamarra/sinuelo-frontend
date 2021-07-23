@@ -1,0 +1,19 @@
+.MuiFormLabel-root.Mui-focused{
+    color: #99ac8b !important;
+}
+.MuiOutlinedInput-root.Mui-focused
+.MuiOutlinedInput-notchedOutline{
+    border-color:#99ac8b !important;
+    border-width: 2px !important;
+}
+.backgroundImage {
+    background-image: url("../../assets/background.png");
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index:-1000;
+    filter:opacity(50%);
+    background-size: 100%;
+}

@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+
+* {
+    margin:0;
+    padding:0;
+    outline:0;
+    box-sizing: border-box;
+}
+
+body {
+    font: 400 14px Roboto , sans-serif;
+    background-color: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(193, 113, 240, 0.58) 73%, rgba(251, 86, 237, 0.589) 83%, rgba(223, 25, 213, 0.496) 90%, rgba(190, 5, 175, 0.835) 100%);
+    -webkit-font-smoothing: antialiased; /*Melhora a visualização da fonte no google chrome*/
+    overflow: auto;
+}
+
+input, textarea {
+    font: 400 18px Roboto , sans-serif;
+}
+
+.titulo {
+    font-size: 4rem;
+    font-weight: 900;  
+    letter-spacing: 0.025em;
+    text-align: left;
+    color: #99ac8b;
+    line-height: 1.375;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: -15deg;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    display: inline-block;
+    max-width: 100%;
+}
+
+.highlight {
+    background-color: #99ac8b;
+    color: rgb(247, 250, 252);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: -12deg;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    display: inline-block;
+}
+
+.textInit {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.625;
+    color: #99ac8b;
+}
+
+.cardInit {
+    max-width: 24rem;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 20;
+    padding: 1.5rem 2rem;
+    background-color: #021931;
+    color: rgb(203, 213, 224);
+    font-weight: 500;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: 0;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    font-size: 0.875rem;
+    line-height: 1.625;
+}
+
+.fontCardInit {
+    color: #FFFFFF;
+    font-weight: 500;
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+    --transform-rotate: 0;
+    --transform-skew-x: 0;
+    --transform-skew-y: 0;
+    --transform-scale-x: 1;
+    --transform-scale-y: 1;
+    font-size: 1rem;
+    line-height: 1.625;
+}
+
+.cardLogin {
+    max-width: 1280px;
+    margin: 0px;
+    background-color: rgb(255, 255, 255);
+    color: #99ac8b;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    display: flex;
+    -moz-box-pack: center;
+    justify-content: center;
+    flex: 1 1 0%; 
+}
+
+.MuiButton-root:hover {
+    filter:brightness(90%); 
+} 
+
+.MuiButton-label { 
+    font-weight: 700;
+} 
+
+.btn-login {
+    background-color: #99ac8b;
+    color: #FFFFFF;
+    width: 100%;
+    height: 50px;
+    max-width: 100%;
+    align-content: center;
+    padding: 6px 8px;
+    font-size: 0.875rem;
+    min-width: 64px;
+    box-sizing: border-box;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.75;
+    border-radius: 4px;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    display: inline-flex;
+    outline: 0; 
+    position: relative;
+    align-items: center; 
+    vertical-align: middle; 
+    justify-content: center;
+    text-decoration: none;
+    -moz-user-select: none; 
+    -webkit-appearance: none; 
+}
+
+.btn-login:hover {
+    filter:brightness(90%); /*Da uma opacidade de 10%*/
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    color: #000000;
+    font-size: 18px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+/*As fontes importadas com react usam o formato svg, para dar margins, usar na tag svg*/
+.back-link svg{
+    margin-left: 8px;
+    margin-bottom: 5px;
+}
+
+.back-link:hover {
+    opacity: 0.8;
+}
+
+/*Alinha o botão no swal*/
+.swal-footer {
+    text-align: center;
+}
+
+/*Remover o underline dos links*/
+:-webkit-any-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+:-moz-any-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+:any-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+:-webkit-any-link:hover{ 
+    color: #99ac8b;
+    font-weight: bold;
+}
+
+:-moz-any-link:hover{ 
+    color: #99ac8b;
+    font-weight: bold;
+}
+
+:any-link:hover{ 
+    color: #99ac8b;
+    font-weight: bold;
+}
+.swal-text {
+  text-align: center;
+}
+/*Remove os Arrows do number*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
