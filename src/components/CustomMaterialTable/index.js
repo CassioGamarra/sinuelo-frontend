@@ -1,8 +1,11 @@
 import './styles.css';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import MaterialTable from 'material-table';  
+
  
 export default function CustomMaterialTable(props) { 
+  const history = useHistory();
   return (
     <div>   
       <MaterialTable
@@ -16,6 +19,14 @@ export default function CustomMaterialTable(props) {
             tooltip: props.add.tooltip,
             onClick: (event, rowData) => {
               props.add.acao()
+            },
+            isFreeAction: true
+          },
+          {
+            icon: 'chevron_left',
+            tooltip: 'Voltar',
+            onClick: () => {
+              history.push('/admin/home');
             },
             isFreeAction: true
           }, 
@@ -42,7 +53,7 @@ export default function CustomMaterialTable(props) {
           pageSize: 10,
           pageSizeOptions: [10, 20, 30],
           headerStyle: {
-            backgroundColor: '#99ac8b',
+            backgroundColor: '#004725',
             color: '#FFF',
           },
           actionsCellStyle: {

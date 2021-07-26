@@ -35,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const history = useHistory();
   const classes = useStyles(); 
- 
+
+  /**
+   * Dialog para realizar o cadastro de uma fazenda
+   */
+
   const [formOpen, setFormOpen] = useState(false);
 
   const handleFormChange = () => {

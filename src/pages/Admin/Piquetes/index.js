@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazenda/Adicionar';
+import AdicionarPiquete from '../../../components/Forms/Piquetes/Adicionar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const history = useHistory();
-  const classes = useStyles(); 
- 
+  const classes = useStyles();  
+
   const [formOpen, setFormOpen] = useState(false);
 
   const handleFormChange = () => {
@@ -44,8 +44,9 @@ export default function Home() {
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'Fazenda', field: 'fazenda', width: 20 },
-    { title: 'Localização', field: 'localizacao', width: 250 },
+    { title: 'Piquete', field: 'piquete', width: 20 },
+    { title: 'Fazenda', field: 'fazenda', width: 250 }, 
+    { title: 'Capacidade', field: 'capacidade', width: 20 },
     { title: 'Nº de animais', field: 'num_animais', width: 20 },];
 
   const data = [{
@@ -84,18 +85,18 @@ export default function Home() {
         {
           !formOpen &&
           <CustomMaterialTable
-            titulo={'Fazendas'}
-            msgSemDados={'Nenhuma fazenda cadastrada'}
+            titulo={'Piquetes'}
+            msgSemDados={'Nenhum piquete cadastrado'}
             colunas={colunas} 
             data={data}
-            add={{tooltip: 'Adicionar Fazenda', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Fazenda', acao: console.log}}
-            excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+            add={{tooltip: 'Adicionar Piquete', acao: handleFormChange}}
+            editar={{tooltip: 'Editar Piquete', acao: console.log}}
+            excluir={{tooltip: 'Excluir Piquete', acao: handleDelete}}
           />
         }
         {
           formOpen &&
-          <AdicionarFazenda 
+          <AdicionarPiquete 
             formClose={handleFormChange}
           />
         }

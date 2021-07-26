@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazenda/Adicionar';
+import AdicionarFuncionario from '../../../components/Forms/Funcionarios/Adicionar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -35,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const history = useHistory();
   const classes = useStyles(); 
- 
+
+  /**
+   * Dialog para realizar o cadastro de uma fazenda
+   */
+
   const [formOpen, setFormOpen] = useState(false);
 
   const handleFormChange = () => {
@@ -44,9 +48,9 @@ export default function Home() {
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'Fazenda', field: 'fazenda', width: 20 },
-    { title: 'Localização', field: 'localizacao', width: 250 },
-    { title: 'Nº de animais', field: 'num_animais', width: 20 },];
+    { title: 'Nome', field: 'fazenda', width: 20 },
+    { title: 'Login', field: 'localizacao', width: 250 },
+    { title: 'Ativo', field: 'num_animais', width: 20 },];
 
   const data = [{
     id: 1,
@@ -84,18 +88,18 @@ export default function Home() {
         {
           !formOpen &&
           <CustomMaterialTable
-            titulo={'Fazendas'}
-            msgSemDados={'Nenhuma fazenda cadastrada'}
+            titulo={'Funcionários'}
+            msgSemDados={'Nenhum funcionário cadastrado'}
             colunas={colunas} 
             data={data}
-            add={{tooltip: 'Adicionar Fazenda', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Fazenda', acao: console.log}}
-            excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+            add={{tooltip: 'Adicionar Funcionário', acao: handleFormChange}}
+            editar={{tooltip: 'Editar Funcionário', acao: console.log}}
+            excluir={{tooltip: 'Excluir Funcionário', acao: handleDelete}}
           />
         }
         {
           formOpen &&
-          <AdicionarFazenda 
+          <AdicionarFuncionario 
             formClose={handleFormChange}
           />
         }
