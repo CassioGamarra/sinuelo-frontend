@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function FormAdicionarFazenda(props) {
+export default function FormAdicionarRaca(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -47,10 +47,7 @@ export default function FormAdicionarFazenda(props) {
     setOpen(!open);
   };
   
-  const [nome, setNome] = useState('');
-  const [cep, setCep] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [estado, setEstado] = useState('');
+  const [nome, setNome] = useState(''); 
 
   const token = localStorage.getItem('TOKEN');
 
@@ -115,34 +112,7 @@ export default function FormAdicionarFazenda(props) {
         }
       }
     }
-  }
-
-  //Verifica o campo de CEP para realizar a busca
-  function verificaCep(cep) {
-    if (cep.length === 9) {
-      cep = cep.replace(/[^\d]+/g, '');
-      if (cep.length === 8) {
-        getCep(cep);
-      }
-    }
-  }
-
-  //Busca o cep no VIACEP
-  async function getCep(cep) {
-    handleOpen();
-    let url = 'https://viacep.com.br/ws/' + cep + '/json/';
-    const response = await fetch(url);
-    const json = await response.json();
-    handleClose();
-    if (!json.erro) {
-      setCidade(json.localidade);
-      setEstado(json.uf);
-    } else {
-      setCidade('');
-      setCidade('');
-    } 
   } 
-
   function limparCampos() {
   }
 
@@ -157,7 +127,7 @@ export default function FormAdicionarFazenda(props) {
         <AppBar className={classes.appBar} elevation={0}>
           <Toolbar> 
             <Typography variant="h6" className={classes.title} >
-              CADASTRAR FAZENDA
+              CADASTRAR RAÇA
             </Typography>
           </Toolbar>
         </AppBar>
@@ -178,50 +148,7 @@ export default function FormAdicionarFazenda(props) {
                   fullWidth
                   size="small"   
                 />
-              </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
-                <TextField
-                  id="cep"
-                  label="CEP"
-                  variant="filled"
-                  value={cep}
-                  required
-                  fullWidth
-                  required 
-                  onChange={e => setCep(cepMask(e.target.value), verificaCep(e.target.value))} 
-                  size="small" 
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
-                <TextField
-                  id="cidade"
-                  label="Cidade"
-                  variant="filled"
-                  value={cidade}
-                  required 
-                  onChange={e => setCidade(e.target.value)} 
-                  inputProps={{
-                    maxLength: 200,
-                  }}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
-                <TextField
-                  id="estado"
-                  label="Estado" 
-                  variant="filled"
-                  value={estado}
-                  required 
-                  onChange={e => setEstado(e.target.value)} 
-                  inputProps={{
-                    maxLength: 2,
-                  }}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
+              </Grid> 
               <Grid item xs={6}>
                 <Button type="submit" className="btn-login btn-form">
                   Salvar

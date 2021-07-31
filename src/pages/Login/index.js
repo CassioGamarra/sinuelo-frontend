@@ -78,23 +78,18 @@ export default function Login() {
     };
     if (!validarDados(data)) {
       showMessage('warn', 'Preencha todos os campos!');
-    }
-    else if(usuario === 'cassiogamarra') {
-      history.push('/admin/home')
-    }
+    } 
     else {
       handleOpen();
       try {
-          const callBackPost = await api.post('/login', data);
+          const callBackPost = await api.post('/admin/login', data);
           if (callBackPost) {
               if (callBackPost.data.statusCode === 200) {
                   handleClose();
-                  login(callBackPost.data.token);
-                  loginTipo(callBackPost.data.tipo);
+                  login(callBackPost.data.token); 
                   if (callBackPost.data.message) {
                       localStorage.setItem("msg", callBackPost.data.message);
-                  }
-                  console.log('logou!')
+                  } 
                   history.push('/admin/home');
               }
               if (callBackPost.data.statusCode === 404) {

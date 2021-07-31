@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazenda/Adicionar';
+import AdicionarRaca from '../../../components/Forms/Racas/Adicionar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -48,8 +48,7 @@ export default function Home() {
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'Fazenda', field: 'fazenda', width: 20 },
-    { title: 'Localização', field: 'localizacao', width: 250 },
+    { title: 'Nome', field: 'fazenda', width: 20 }, 
     { title: 'Nº de animais', field: 'num_animais', width: 20 },];
 
   const data = [{
@@ -65,7 +64,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir a fazenda?",
+      title: "Deseja excluir a raça?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -88,18 +87,18 @@ export default function Home() {
         {
           !formOpen &&
           <CustomMaterialTable
-            titulo={'Fazendas'}
-            msgSemDados={'Nenhuma fazenda cadastrada'}
+            titulo={'Raças'}
+            msgSemDados={'Nenhuma raça cadastrada'}
             colunas={colunas} 
             data={data}
-            add={{tooltip: 'Adicionar Fazenda', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Fazenda', acao: console.log}}
-            excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+            add={{tooltip: 'Adicionar Raça', acao: handleFormChange}}
+            editar={{tooltip: 'Editar Raça', acao: console.log}}
+            excluir={{tooltip: 'Excluir Raça', acao: handleDelete}}
           />
         }
         {
           formOpen &&
-          <AdicionarFazenda 
+          <AdicionarRaca 
             formClose={handleFormChange}
           />
         }

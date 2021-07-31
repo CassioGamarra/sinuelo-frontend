@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'; 
@@ -33,10 +33,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   }, 
 }));
-
-
-
-export default function FormAdicionarFazenda(props) {
+ 
+export default function FormEditarFazenda(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -47,6 +45,7 @@ export default function FormAdicionarFazenda(props) {
     setOpen(!open);
   };
   
+  const [idFazenda, setIdFazenda] = useState('');
   const [nome, setNome] = useState('');
   const [cep, setCep] = useState('');
   const [cidade, setCidade] = useState('');
@@ -54,7 +53,11 @@ export default function FormAdicionarFazenda(props) {
 
   const token = localStorage.getItem('TOKEN');
 
-  async function handleRegister(e) {
+  useEffect(() => {
+    buscarFazenda();  
+  }, []);
+
+  async function handleEdit(e) {
     e.preventDefault();
 
     let erros = semErros();
@@ -62,36 +65,40 @@ export default function FormAdicionarFazenda(props) {
     if (erros.length > 0) {
       let msg = '';
       erros.map(elt => (
-        msg += elt
-      )
+          msg += elt
+        )
       );
       showMessage('error', msg);
     }
-    else {
-      const data = [];
+    else { 
+      const data = {
+        NOME: nome.trim(),
+        CEP: cep.replace(/[^\d]+/g, ''),
+        CIDADE: cidade.trim(),
+        ESTADO: estado.trim() 
+      };
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.put(`/fazendas/${idFazenda}`, data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos();   
+              props.buscarFazendas();
+              props.formClose();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos(); 
+              props.buscarFazendas();
+              props.formClose();
             });
           }
         }
@@ -113,6 +120,39 @@ export default function FormAdicionarFazenda(props) {
           handleClose();
           showMessage('error', 'Falha na conexão');
         }
+      }
+    }
+  }
+
+  async function buscarFazenda() {
+    handleOpen();
+    try {
+      const getFazendaById = await api.get(`/fazendas/${props.idFazenda}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      let dados = getFazendaById.data[0];
+      setIdFazenda(dados.id);
+      setNome(dados.nome);
+      setCep(dados.cep);
+      setCidade(dados.cidade);
+      setEstado(dados.estado);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
       }
     }
   }
@@ -144,6 +184,10 @@ export default function FormAdicionarFazenda(props) {
   } 
 
   function limparCampos() {
+    setNome('');
+    setCep('');
+    setCidade('');
+    setEstado('');
   }
 
   function semErros() {
@@ -157,12 +201,12 @@ export default function FormAdicionarFazenda(props) {
         <AppBar className={classes.appBar} elevation={0}>
           <Toolbar> 
             <Typography variant="h6" className={classes.title} >
-              CADASTRAR FAZENDA
+              EDITAR FAZENDA
             </Typography>
           </Toolbar>
         </AppBar>
         <Container maxWidth={false} style={{backgroundColor: '#004725', marginTop: '1em'}}>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={handleEdit}>
             <Grid container spacing={2} alignItems="flex-end">
               <Grid item xs={12}>
                 <TextField

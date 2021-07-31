@@ -130,6 +130,14 @@ input, textarea {
     border-radius: 8px;
 }
 
+.MuiSelect-filled.MuiSelect-filled{
+    border-radius: 8px; 
+}
+
+.MuiSelect-select:focus{
+    border-radius: 8px !important; 
+}
+
 .MuiFilledInput-underline:after {
     border-bottom: none !important;
 }

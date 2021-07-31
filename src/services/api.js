@@ -7,7 +7,8 @@ import axios from 'axios';
 * 4 - Dev
 */ 
 const api = axios.create({ 
-  baseURL: 'https://gestante-do-zap-api.herokuapp.com'
+  //baseURL: 'https://gestante-do-zap-api.herokuapp.com'
+  baseURL: 'http://127.0.0.1:3333'
 });
 
 export default api

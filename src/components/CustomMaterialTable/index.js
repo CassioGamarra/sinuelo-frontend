@@ -34,7 +34,8 @@ export default function CustomMaterialTable(props) {
             icon: 'edit',
             tooltip: props.editar.tooltip,
             onClick: (event, rowData) => {
-              props.editar.acao(rowData.id)
+              props.editar.acao()
+              props.editar.setId(rowData.id)
             },
           },
           {

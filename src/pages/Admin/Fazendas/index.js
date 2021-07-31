@@ -2,13 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ToastAnimated from '../../../components/Toasts'; 
 import Header from '../../../components/HeaderDashboard';
-import { logout } from '../../../services/auth.js';
+import { logout } from '../../../services/auth';
+import api from '../../../services/api';
 //Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
+import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../utils/showToast'; 
+//Loader Material UI
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazenda/Adicionar';
+import AdicionarFazenda from '../../../components/Forms/Fazendas/Adicionar';
+import EditarFazenda from '../../../components/Forms/Fazendas/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -33,31 +39,76 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
+  const token = localStorage.getItem('TOKEN');
   const history = useHistory();
   const classes = useStyles(); 
- 
-  const [formOpen, setFormOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(!open);
+  };
 
-  const handleFormChange = () => {
-    setFormOpen(!formOpen);
+  const [formCadastroOpen, setFormCadastroOpen] = useState(false);
+
+  const handleFormCadastroChange = () => {
+    setFormCadastroOpen(!formCadastroOpen);
+  }
+  
+  const [formEditarOpen, setFormEditarOpen] = useState(false);
+
+  const handleFormEditarChange = () => { 
+    setFormEditarOpen(!formEditarOpen);
   } 
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'Fazenda', field: 'fazenda', width: 20 },
+    { title: 'Fazenda', field: 'nome', width: 20 },
     { title: 'Localização', field: 'localizacao', width: 250 },
     { title: 'Nº de animais', field: 'num_animais', width: 20 },];
 
-  const data = [{
-    id: 1,
-    fazenda: 'Do boqueirão',
-    localizacao: 'São Luiz Gonzaga',
-    num_animais: '300'
-  }]  
+  const [data, setData] = useState([]);
+
+  const [idFazenda, setIdFazenda] = useState('');
+  const [reload, setReload] = useState(false);
+
   function handleLogout() {
     logout();
     history.push('/');
   } 
+
+  useEffect(() => {
+    buscarFazendas(); 
+  }, []);
+ 
+  async function buscarFazendas() {
+    handleOpen();
+    try {
+      const getFazendas = await api.get('/fazendas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setData(getFazendas.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
 
   async function handleDelete(id) {
     swal({
@@ -69,9 +120,52 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        console.log('Excluir: '+id)
+        deleteFazenda(id);
       }
     });
+  }
+
+  async function deleteFazenda(id) {  
+    handleOpen();
+    try {
+      const callBackPost = await api.delete(`/fazendas/${idFazenda}`, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+      if (callBackPost) {
+        if (callBackPost.data.error) {
+          swalRegisterError(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarFazendas();
+          });
+        }
+        if (callBackPost.data.deletado) {
+          swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarFazendas(); 
+          });
+        }
+      }
+    }
+    catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
   }
 
   return (
@@ -82,21 +176,37 @@ export default function Home() {
       <ToastAnimated />
       <div className={classes.panels} > 
         {
-          !formOpen &&
-          <CustomMaterialTable
-            titulo={'Fazendas'}
-            msgSemDados={'Nenhuma fazenda cadastrada'}
-            colunas={colunas} 
-            data={data}
-            add={{tooltip: 'Adicionar Fazenda', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Fazenda', acao: console.log}}
-            excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+          (!formCadastroOpen && !formEditarOpen) &&
+          <>
+            <CustomMaterialTable
+              titulo={'Fazendas'}
+              msgSemDados={'Nenhuma fazenda cadastrada'}
+              colunas={colunas} 
+              data={data}
+              add={{tooltip: 'Adicionar Fazenda', acao: handleFormCadastroChange}}
+              editar={{tooltip: 'Editar Fazenda', acao: handleFormEditarChange, setId: setIdFazenda}}
+              excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+            />
+            <Backdrop className={classes.backdrop} open={open}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </>
+        }
+        {
+          formCadastroOpen &&
+          <AdicionarFazenda 
+            formClose={handleFormCadastroChange} 
+            handleLogout={handleLogout}
+            buscarFazendas={buscarFazendas}
           />
         }
         {
-          formOpen &&
-          <AdicionarFazenda 
-            formClose={handleFormChange}
+          formEditarOpen &&
+          <EditarFazenda 
+            idFazenda={idFazenda}
+            formClose={handleFormEditarChange}
+            handleLogout={handleLogout}
+            buscarFazendas={buscarFazendas} 
           />
         }
       </div>

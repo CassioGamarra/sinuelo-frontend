@@ -33,9 +33,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   }, 
 }));
-
-
-
+ 
 export default function FormAdicionarFazenda(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -62,36 +60,40 @@ export default function FormAdicionarFazenda(props) {
     if (erros.length > 0) {
       let msg = '';
       erros.map(elt => (
-        msg += elt
-      )
+          msg += elt
+        )
       );
       showMessage('error', msg);
     }
-    else {
-      const data = [];
+    else { 
+      const data = {
+        NOME: nome.trim(),
+        CEP: cep.replace(/[^\d]+/g, ''),
+        CIDADE: cidade.trim(),
+        ESTADO: estado.trim() 
+      };
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.post('/fazendas', data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos();   
+              props.buscarFazendas();
+              props.formClose();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos(); 
+              props.buscarFazendas();
+              props.formClose();
             });
           }
         }
@@ -144,6 +146,10 @@ export default function FormAdicionarFazenda(props) {
   } 
 
   function limparCampos() {
+    setNome('');
+    setCep('');
+    setCidade('');
+    setEstado('');
   }
 
   function semErros() {

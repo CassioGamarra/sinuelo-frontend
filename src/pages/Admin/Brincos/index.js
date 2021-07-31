@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazenda/Adicionar';
+import AdicionarFazenda from '../../../components/Forms/Fazendas/Adicionar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
