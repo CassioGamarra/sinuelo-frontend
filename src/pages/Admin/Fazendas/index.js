@@ -70,8 +70,7 @@ export default function Home() {
 
   const [data, setData] = useState([]);
 
-  const [idFazenda, setIdFazenda] = useState('');
-  const [reload, setReload] = useState(false);
+  const [idFazenda, setIdFazenda] = useState(''); 
 
   function handleLogout() {
     logout();

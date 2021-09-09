@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(-2),
   },
   title: {
     [theme.breakpoints.up('sm')]: {
@@ -63,6 +63,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+    marginRight: '1px'
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {

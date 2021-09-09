@@ -35,20 +35,21 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
-        {/*Login*/} 
+        {/*Login*/}   
         <Route exact path="/" component={Login} />
-        <Route exact path="/admin/home" component={HomeAdmin} /> 
-        <Route exact path="/admin/fazendas" component={Fazendas} />
-        <Route exact path="/admin/piquetes" component={Piquetes} />
-        <Route exact path="/admin/funcionarios" component={Funcionarios} /> 
-        <Route exact path="/admin/racas" component={Racas} />
-        <Route exact path="/admin/animais" component={Animais} />
-        <Route exact path="/admin/vacinas" component={Vacinas} />
-        <Route exact path="/admin/medicamentos" component={Medicamentos} />
-        <Route exact path="/admin/doencas" component={Doencas} />
-        <Route exact path="/admin/brincos" component={Brincos} />
-        <Route exact path="/admin/alertas" component={Alertas} />
-        <Route exact path="/admin/relatorios" component={Relatorios} /> 
+        <PrivateAdmin exact path="/admin/home" component={HomeAdmin} /> 
+        <PrivateAdmin exact path="/admin/fazendas" component={Fazendas} />
+        <PrivateAdmin exact path="/admin/piquetes" component={Piquetes} />
+        <PrivateAdmin exact path="/admin/funcionarios" component={Funcionarios} /> 
+        <PrivateAdmin exact path="/admin/racas" component={Racas} />
+        <PrivateAdmin exact path="/admin/animais" component={Animais} />
+        <PrivateAdmin exact path="/admin/vacinas" component={Vacinas} />
+        <PrivateAdmin exact path="/admin/medicamentos" component={Medicamentos} />
+        <PrivateAdmin exact path="/admin/doencas" component={Doencas} />
+        <PrivateAdmin exact path="/admin/brincos" component={Brincos} />
+        <PrivateAdmin exact path="/admin/alertas" component={Alertas} />
+        <PrivateAdmin exact path="/admin/relatorios" component={Relatorios} /> 
+        <Redirect from="*" to="/" />
       </Switch>
     </BrowserRouter>
   );

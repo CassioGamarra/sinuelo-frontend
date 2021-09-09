@@ -51,16 +51,8 @@ export default function FormAdicionarAnimal(props) {
   };
 
   const [fazendas, setFazendas] = useState([]);
-
-  const piquetes = [{
-    id_piquete: 1,
-    nome: 'Do cerro'
-  }]; 
-
-  const racas = [{
-    id_raca: 1,
-    nome: 'Devon'
-  }];  
+  const [piquetes, setPiquetes] = useState([]);
+  const [racas, setRacas] = useState([]); 
 
   const [idFazenda, setIdFazenda] = useState('');
   const [fazenda, setFazenda] = useState('');
@@ -80,6 +72,7 @@ export default function FormAdicionarAnimal(props) {
 
   useEffect(() => {
     buscarFazendas();  
+    buscarRacas();
   }, []);
 
   async function buscarFazendas() {
@@ -109,6 +102,62 @@ export default function FormAdicionarAnimal(props) {
       }
     }
   }
+
+  async function buscarPiquetes(id) {
+    handleOpen();
+    try {
+      const getPiquetes = await api.get(`/fazendas/${id}/piquetes`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setPiquetes(getPiquetes.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
+  async function buscarRacas() {
+    handleOpen();
+    try {
+      const getRacas = await api.get('/racas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setRacas(getRacas.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  } 
   
   async function handleRegister(e) {
     e.preventDefault();
@@ -124,30 +173,39 @@ export default function FormAdicionarAnimal(props) {
       showMessage('error', msg);
     }
     else {
-      const data = [];
+      const data = {
+        ID_FAZENDA: idFazenda,
+        ID_PIQUETE: idPiquete ? idPiquete : null,
+        ID_RACA: idRaca,
+        NOME: nome.trim(),
+        SEXO: sexo,
+        DATA_NASCIMENTO: dataNascimento,
+        NOME_PAI: nomePai.trim(),
+        NOME_MAE: nomeMae.trim(),
+        PESO: peso,
+        PELAGEM: pelagem.trim()
+      };
+      
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
-          headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-          }
+        const callBackPost = await api.post('/animais', data, {
+          headers: { Authorization: "Bearer " + token }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
               handleClose();
               limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              props.formClose();
+              props.buscarAnimais();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
               limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              props.formClose();
+              props.buscarAnimais();
             });
           }
         }
@@ -204,12 +262,13 @@ export default function FormAdicionarAnimal(props) {
                     onChange={(event, value) => {
                       if (value) {
                         setIdFazenda(value.id);
+                        buscarPiquetes(value.id);
                       }
                     }}
                     size="small"
                     inputValue={fazenda} //Valor que armazena no textField
                     onInputChange={(event, input) => {
-                      setFazenda(input)
+                      setFazenda(input);
                     }}
                     required
                     renderInput={(params) =>
@@ -229,10 +288,10 @@ export default function FormAdicionarAnimal(props) {
                     id="piquetes"
                     options={piquetes}
                     getOptionLabel={(option) => option.nome}
-                    getOptionSelected={(option) => option.id_piquete}
+                    getOptionSelected={(option) => option.id}
                     onChange={(event, value) => {
                       if (value) {
-                        setIdPiquete(value.id_piquete);
+                        setIdPiquete(value.id);
                       }
                     }}
                     size="small"
@@ -256,10 +315,10 @@ export default function FormAdicionarAnimal(props) {
                     id="racas"
                     options={racas}
                     getOptionLabel={(option) => option.nome}
-                    getOptionSelected={(option) => option.id_raca}
+                    getOptionSelected={(option) => option.id}
                     onChange={(event, value) => {
                       if (value) {
-                        setIdRaca(value.id_raca);
+                        setIdRaca(value.id);
                       }
                     }}
                     size="small"

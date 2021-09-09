@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ToastAnimated from '../../../components/Toasts'; 
 import Header from '../../../components/HeaderDashboard';
-import { logout } from '../../../services/auth.js';
+import { logout } from '../../../services/auth';
+import api from '../../../services/api';
+import { showMessage } from '../../../utils/showToast'; 
 //Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
 import AdicionarAnimal from '../../../components/Forms/Animais/Adicionar';
+import EditarAnimal from '../../../components/Forms/Animais/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -31,11 +34,30 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Bebas Neue'
   },
 }));
-
+ 
 export default function Home() {
+  const token = localStorage.getItem('TOKEN');
   const history = useHistory();
   const classes = useStyles(); 
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(!open);
+  };
 
+  const [formCadastroOpen, setFormCadastroOpen] = useState(false);
+
+  const handleFormCadastroChange = () => {
+    setFormCadastroOpen(!formCadastroOpen);
+  }
+  
+  const [formEditarOpen, setFormEditarOpen] = useState(false);
+
+  const handleFormEditarChange = () => { 
+    setFormEditarOpen(!formEditarOpen);
+  } 
   /**
    * Dialog para realizar o cadastro de uma fazenda
    */
@@ -48,23 +70,54 @@ export default function Home() {
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'NOME', field: 'localizacao', width: 250 }, 
-    { title: 'BRINCO', field: 'localizacao', width: 250 }, 
-    { title: 'PESO ORIGINAL', field: 'localizacao', width: 250 }, 
-    { title: 'PESO ATUAL', field: 'localizacao', width: 250 }, 
-    { title: 'RAÇA', field: 'localizacao', width: 250 }, 
-    { title: 'SEXO', field: 'localizacao', width: 250 }, ];
+    { title: 'NOME', field: 'nome', width: 250 }, 
+    { title: 'BRINCO', field: 'brinco', width: 250 }, 
+    { title: 'PESO ORIGINAL', field: 'peso_original', width: 250 }, 
+    { title: 'PESO ATUAL', field: 'peso_atual', width: 250 }, 
+    { title: 'RAÇA', field: 'raca', width: 250 }, 
+    { title: 'SEXO', field: 'sexo', width: 250 }, 
+  ];
+ 
+  const [data, setData] = useState([]);
 
-  const data = [{
-    id: 1,
-    fazenda: 'Do boqueirão',
-    localizacao: 'São Luiz Gonzaga',
-    num_animais: '300'
-  }]  
+  const [idAnimal, setIdAnimal] = useState('');
+
   function handleLogout() {
     logout();
     history.push('/');
   } 
+
+  useEffect(() => {
+    buscarAnimais();
+  }, []);
+
+  async function buscarAnimais() {
+    handleOpen();
+    try {
+      const getAnimais = await api.get('/animais', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose(); 
+      setData(getAnimais.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
 
   async function handleDelete(id) {
     swal({
@@ -89,21 +142,32 @@ export default function Home() {
       <ToastAnimated />
       <div className={classes.panels} > 
         {
-          !formOpen &&
+          (!formCadastroOpen && !formEditarOpen) &&
           <CustomMaterialTable
             titulo={'Animais'}
             msgSemDados={'Nenhuma animal cadastrada'}
             colunas={colunas} 
             data={data}
-            add={{tooltip: 'Adicionar Animal', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Animal', acao: console.log}}
-            excluir={{tooltip: 'Excluir Animal', acao: handleDelete}}
+            add={{ tooltip: 'Adicionar Animal', acao: handleFormCadastroChange }}
+              editar={{ tooltip: 'Editar Animal', acao: handleFormEditarChange, setId: setIdAnimal }}
+              excluir={{ tooltip: 'Excluir Animal', acao: handleDelete }}
           />
         }
         {
-          formOpen &&
-          <AdicionarAnimal 
-            formClose={handleFormChange}
+          formCadastroOpen &&
+          <AdicionarAnimal
+            formClose={handleFormCadastroChange}
+            handleLogout={handleLogout}
+            buscarAnimais={buscarAnimais}
+          />
+        }
+        {
+          formEditarOpen &&
+          <EditarAnimal
+            idAnimal={idAnimal}
+            formClose={handleFormEditarChange}
+            handleLogout={handleLogout}
+            buscarAnimais={buscarAnimais}
           />
         }
       </div>

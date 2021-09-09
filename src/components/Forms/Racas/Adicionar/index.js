@@ -13,7 +13,7 @@ import swal from 'sweetalert';
 import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../../utils/showToast'; 
 
 import { cepMask } from '../../../../utils/mask';
-
+ 
 //Loader Material UI
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -33,9 +33,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   }, 
 }));
-
-
-
+ 
 export default function FormAdicionarRaca(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -65,30 +63,29 @@ export default function FormAdicionarRaca(props) {
       showMessage('error', msg);
     }
     else {
-      const data = [];
+      const data = {
+        NOME: nome
+      };
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.post('/racas', data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              handleClose(); 
+              props.formClose();
+              props.buscarRacas();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              handleClose(); 
+              props.formClose();
+              props.buscarRacas();
             });
           }
         }
@@ -112,10 +109,8 @@ export default function FormAdicionarRaca(props) {
         }
       }
     }
-  } 
-  function limparCampos() {
-  }
-
+  }  
+  
   function semErros() {
     let erros = [];
     return erros;

@@ -1,5 +1,4 @@
 export const TOKEN_KEY = "TOKEN"; //Cria o token com o nome
-export const TIPO = "TIPO"; //Tipo 
 export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null; //Define que a função isAuthenticated recebe o token se não for nulo
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY); //Busca o token no localStorage

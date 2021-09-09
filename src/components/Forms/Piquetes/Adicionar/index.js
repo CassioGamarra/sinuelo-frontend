@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'; 
@@ -13,8 +13,6 @@ import Container from '@material-ui/core/Container';
 import api from '../../../../services/api';
 import swal from 'sweetalert';
 import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../../utils/showToast'; 
-
-import { cepMask } from '../../../../utils/mask';
 
 //Loader Material UI
 import Backdrop from '@material-ui/core/Backdrop';
@@ -37,8 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
  
 export default function FormAdicionarPiquete(props) {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles(); 
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -46,18 +43,46 @@ export default function FormAdicionarPiquete(props) {
   const handleOpen = () => {
     setOpen(!open);
   };
-
-  const fazendas = [{
-    id_fazenda: 1,
-    nome: 'Do boqueirão'
-  }]  
-  
+ 
   const [idFazenda, setIdFazenda] = useState('');
   const [fazenda, setFazenda] = useState('');
   const [nome, setNome] = useState('');
   const [capacidade, setCapacidade] = useState('');
+  const [fazendas, setFazendas] = useState([]);
 
   const token = localStorage.getItem('TOKEN');
+
+  useEffect(() => {
+    buscarFazendas(); 
+  }, []);
+ 
+  async function buscarFazendas() {
+    handleOpen();
+    try {
+      const getFazendas = await api.get('/fazendas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setFazendas(getFazendas.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -72,31 +97,32 @@ export default function FormAdicionarPiquete(props) {
       );
       showMessage('error', msg);
     }
-    else {
-      const data = [];
+    else { 
+      const data = {
+        ID_FAZENDA: idFazenda,
+        NOME: nome.trim(),
+        CAPACIDADE: capacidade, 
+      }; 
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.post('/piquetes', data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              handleClose(); 
+              props.formClose();
+              props.buscarPiquetes();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              handleClose(); 
+              props.formClose();
+              props.buscarPiquetes();
             });
           }
         }
@@ -122,9 +148,6 @@ export default function FormAdicionarPiquete(props) {
     }
   } 
 
-  function limparCampos() {
-  }
-
   function semErros() {
     let erros = [];
     return erros;
@@ -149,10 +172,10 @@ export default function FormAdicionarPiquete(props) {
                     id="fazendas"
                     options={fazendas}
                     getOptionLabel={(option) => option.nome}
-                    getOptionSelected={(option) => option.id_fazenda}
-                    onChange={(event, value) => {
+                    getOptionSelected={(option) => option.id}
+                    onChange={(event, value) => { 
                       if (value) {
-                        setIdFazenda(value.id_fazenda);
+                        setIdFazenda(value.id);
                       }
                     }}
                     size="small"
@@ -193,10 +216,8 @@ export default function FormAdicionarPiquete(props) {
                   variant="filled"
                   value={capacidade}
                   required 
-                  onChange={e => setCapacidade(e.target.value)} 
-                  inputProps={{
-                    maxLength: 2,
-                  }}
+                  type="number"
+                  onChange={e => setCapacidade(e.target.value)}  
                   fullWidth
                   size="small"
                 />
