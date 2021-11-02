@@ -13,9 +13,7 @@ import Container from '@material-ui/core/Container';
 import api from '../../../../services/api';
 import swal from 'sweetalert';
 import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../../utils/showToast'; 
-
-import { cepMask } from '../../../../utils/mask';
-
+  
 //Loader Material UI
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -51,48 +49,52 @@ export default function FormAdicionarFuncionario(props) {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
   const [email, setEmail] = useState('');
-  const [ativo, setAtivo] = useState('');
+  const [ativo, setAtivo] = useState(false);
 
   const token = localStorage.getItem('TOKEN');
 
   async function handleRegister(e) {
     e.preventDefault();
-
     let erros = semErros();
 
     if (erros.length > 0) {
       let msg = '';
       erros.map(elt => (
-        msg += elt
-      )
+          msg += elt
+        )
       );
       showMessage('error', msg);
     }
-    else {
-      const data = [];
+    else { 
+      const data = {
+        NOME: nome.trim(),
+        USUARIO: usuario.trim(),
+        SENHA: senha.trim(),
+        EMAIL: email.trim(),
+        ATIVO: ativo 
+      };
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.post('/funcionarios', data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos();   
+              props.buscarFuncionarios();
+              props.formClose();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos(); 
+              props.buscarFuncionarios();
+              props.formClose();
             });
           }
         }
@@ -119,6 +121,11 @@ export default function FormAdicionarFuncionario(props) {
   } 
 
   function limparCampos() {
+    setNome('');
+    setUsuario('');
+    setSenha('');
+    setEmail('');
+    setAtivo(false);
   }
 
   function semErros() {
