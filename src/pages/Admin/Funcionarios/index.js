@@ -178,7 +178,7 @@ export default function Home() {
           <>
             <CustomMaterialTable
               titulo={'Funcionários'}
-              msgSemDados={'Nenhuma funcionário cadastrado'}
+              msgSemDados={'Nenhum funcionário cadastrado'}
               colunas={colunas} 
               data={data}
               add={{tooltip: 'Adicionar Funcionário', acao: handleFormCadastroChange}}

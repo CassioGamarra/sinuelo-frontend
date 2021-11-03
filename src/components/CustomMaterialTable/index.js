@@ -48,7 +48,7 @@ export default function CustomMaterialTable(props) {
         ]}
         /*Coloca as actions na ultima coluna*/
         options={{
-          actionsColumnIndex: -1, 
+          actionsColumnIndex: 0, 
           draggable: false,
           maxBodyHeight: 600,
           pageSize: 10,

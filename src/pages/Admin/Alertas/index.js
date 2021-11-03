@@ -4,11 +4,16 @@ import ToastAnimated from '../../../components/Toasts';
 import Header from '../../../components/HeaderDashboard';
 import { logout } from '../../../services/auth.js';
 //Material UI
+import api from '../../../services/api';
+//Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
+import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../utils/showToast';  
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarFazenda from '../../../components/Forms/Fazendas/Adicionar';
+import AdicionarAlerta from '../../../components/Forms/Alertas/Adicionar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -33,39 +38,77 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
+  const token = localStorage.getItem('TOKEN');
   const history = useHistory();
   const classes = useStyles(); 
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(!open);
+  }; 
 
-  /**
-   * Dialog para realizar o cadastro de uma fazenda
-   */
+  const [formCadastroOpen, setFormCadastroOpen] = useState(false);
 
-  const [formOpen, setFormOpen] = useState(false);
+  const handleFormCadastroChange = () => {
+    setFormCadastroOpen(!formCadastroOpen);
+  }
 
-  const handleFormChange = () => {
-    setFormOpen(!formOpen);
-  } 
+  const [formEditarOpen, setFormEditarOpen] = useState(false);
+
+  const handleFormEditarChange = () => {
+    setFormEditarOpen(!formEditarOpen);
+  }
 
   const colunas = [
     { title: 'id', field: 'id', hidden: true },
-    { title: 'Fazenda', field: 'fazenda', width: 20 },
-    { title: 'Localização', field: 'localizacao', width: 250 },
-    { title: 'Nº de animais', field: 'num_animais', width: 20 },];
+    { title: 'Descrição', field: 'descricao', width: 250 }];
 
-  const data = [{
-    id: 1,
-    fazenda: 'Do boqueirão',
-    localizacao: 'São Luiz Gonzaga',
-    num_animais: '300'
-  }]  
+  const [data, setData] = useState([]);
+
+  const [idAlerta, setIdAlerta] = useState(''); 
+
   function handleLogout() {
     logout();
     history.push('/');
   } 
 
+  useEffect(() => {
+    buscarAlertas(); 
+  }, []);
+ 
+  async function buscarAlertas() {
+    handleOpen();
+    try {
+      const getBrincos = await api.get('/alertas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setData(getBrincos.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir a fazenda?",
+      title: "Deseja excluir o funcionário?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -73,9 +116,52 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        console.log('Excluir: '+id)
+        deletaFuncionario(id);
       }
     });
+  }
+
+  async function deletaFuncionario(id) {  
+    handleOpen();
+    try {
+      const callBackPost = await api.delete(`/funcionarios/${idAlerta}`, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+      if (callBackPost) {
+        if (callBackPost.data.error) {
+          swalRegisterError(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarAlertas();
+          });
+        }
+        if (callBackPost.data.deletado) {
+          swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarAlertas(); 
+          });
+        }
+      }
+    }
+    catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
   }
 
   return (
@@ -84,24 +170,40 @@ export default function Home() {
         logout={handleLogout}
       />
       <ToastAnimated />
-      <div className={classes.panels} > 
+      <div className={classes.panels} >   
         {
-          !formOpen &&
-          <CustomMaterialTable
-            titulo={'Fazendas'}
-            msgSemDados={'Nenhuma fazenda cadastrada'}
-            colunas={colunas} 
-            data={data}
-            add={{tooltip: 'Adicionar Fazenda', acao: handleFormChange}}
-            editar={{tooltip: 'Editar Fazenda', acao: console.log}}
-            excluir={{tooltip: 'Excluir Fazenda', acao: handleDelete}}
+          (!formCadastroOpen && !formEditarOpen) &&
+          <>
+            <CustomMaterialTable
+              titulo={'Alertas'}
+              msgSemDados={'Nenhum alerta cadastrado'}
+              colunas={colunas} 
+              data={data}
+              add={{tooltip: 'Adicionar Alerta', acao: handleFormCadastroChange}}
+              editar={{tooltip: 'Editar Alerta', acao: handleFormEditarChange, setId: setIdAlerta}}
+              excluir={{tooltip: 'Excluir Alerta', acao: handleDelete}}
+            />
+            <Backdrop className={classes.backdrop} open={open}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </>
+        }
+        {
+          formCadastroOpen &&
+          <AdicionarAlerta 
+            formClose={handleFormCadastroChange} 
+            handleLogout={handleLogout}
+            buscarAlertas={buscarAlertas}
           />
         }
         {
-          formOpen &&
-          <AdicionarFazenda 
-            formClose={handleFormChange}
-          />
+          /*formEditarOpen &&
+          <EditarFuncionario 
+            idAlerta={idAlerta}
+            formClose={handleFormEditarChange}
+            handleLogout={handleLogout}
+            buscarAlertas={buscarAlertas} 
+          />*/
         }
       </div>
     </>
