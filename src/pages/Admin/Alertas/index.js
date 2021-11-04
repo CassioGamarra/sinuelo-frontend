@@ -81,11 +81,11 @@ export default function Home() {
   async function buscarAlertas() {
     handleOpen();
     try {
-      const getBrincos = await api.get('/alertas', {
+      const getAlertas = await api.get('/alertas', {
         headers: { Authorization: "Bearer " + token }
       });
       handleClose();
-      setData(getBrincos.data);
+      setData(getAlertas.data);
     } catch (err) {
       if (err.response) {
         if (err.response.status === 401) {

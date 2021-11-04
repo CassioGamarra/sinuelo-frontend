@@ -141,6 +141,7 @@ export default function FormAdicionarBrinco(props) {
                   label="Descrição"
                   variant="filled"
                   value={descricao} 
+                  required
                   onChange={e => setDescricao(e.target.value)} 
                   inputProps={{
                     maxLength: 200,
