@@ -115,10 +115,7 @@ export default function FormAdicionarBrinco(props) {
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();   
-              props.buscarBrincos();
-              props.formClose();
+              handleClose(); 
             });
           }
           if (callBackPost.data.cadastrado) {
@@ -192,6 +189,8 @@ export default function FormAdicionarBrinco(props) {
                     onChange={(event, value) => {
                       if (value) {
                         setIdAnimal(value.id); 
+                      } else {
+                        setIdAnimal('');
                       }
                     }}
                     size="small"

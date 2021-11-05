@@ -4,7 +4,7 @@ import ToastAnimated from '../../../components/Toasts';
 import Header from '../../../components/HeaderDashboard';
 import { logout } from '../../../services/auth.js';
 import api from '../../../services/api';
-import { showMessage } from '../../../utils/showToast'; 
+import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../utils/showToast'; 
 //Loader Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import swal from 'sweetalert';
@@ -112,17 +112,60 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir a fazenda?",
-      icon: "warning",
+      title: "Deseja excluir o piquete?",
+      icon: "warning", 
       buttons: {
         confirm: "Sim",
         cancel: "Não"
       }
     }).then((excluir) => {
       if (excluir) {
-        console.log('Excluir: ' + id)
+        deletePiquete(id);
       }
     });
+  }
+
+  async function deletePiquete(id) {  
+    handleOpen();
+    try {
+      const callBackPost = await api.delete(`/piquetes/${id}`, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      });
+      if (callBackPost) {
+        if (callBackPost.data.error) {
+          swalRegisterError(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarPiquetes();
+          });
+        }
+        if (callBackPost.data.deletado) {
+          swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
+            handleClose(); 
+            buscarPiquetes();
+          });
+        }
+      }
+    }
+    catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
   }
 
   return (

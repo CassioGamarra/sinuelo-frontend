@@ -56,7 +56,7 @@ export default function FormEditarFazenda(props) {
   useEffect(() => {
     buscarFazenda();  
   }, []);
-
+ 
   async function handleEdit(e) {
     e.preventDefault();
 

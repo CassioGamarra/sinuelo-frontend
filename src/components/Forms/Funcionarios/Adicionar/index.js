@@ -83,10 +83,7 @@ export default function FormAdicionarFuncionario(props) {
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();   
-              props.buscarFuncionarios();
-              props.formClose();
+              handleClose(); 
             });
           }
           if (callBackPost.data.cadastrado) {

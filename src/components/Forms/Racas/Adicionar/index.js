@@ -76,9 +76,7 @@ export default function FormAdicionarRaca(props) {
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose(); 
-              props.formClose();
-              props.buscarRacas();
+              handleClose();  
             });
           }
           if (callBackPost.data.cadastrado) {

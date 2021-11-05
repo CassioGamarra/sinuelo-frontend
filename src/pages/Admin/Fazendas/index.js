@@ -127,7 +127,7 @@ export default function Home() {
   async function deleteFazenda(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/fazendas/${idFazenda}`, {
+      const callBackPost = await api.delete(`/fazendas/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }

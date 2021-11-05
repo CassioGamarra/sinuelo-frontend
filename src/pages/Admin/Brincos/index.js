@@ -109,7 +109,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir o funcionário?",
+      title: "Deseja excluir o brinco?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -117,15 +117,15 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        deletaFuncionario(id);
+        deletaBrinco(id);
       }
     });
   }
 
-  async function deletaFuncionario(id) {  
+  async function deletaBrinco(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idBrinco}`, {
+      const callBackPost = await api.delete(`/brincos/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }

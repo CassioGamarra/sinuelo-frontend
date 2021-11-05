@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
 import AdicionarFuncionario from '../../../components/Forms/Funcionarios/Adicionar';
+import EditarFuncionario from '../../../components/Forms/Funcionarios/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -109,6 +110,7 @@ export default function Home() {
   }
 
   async function handleDelete(id) {
+    console.log(id)
     swal({
       title: "Deseja excluir o funcionário?",
       icon: "warning", 
@@ -126,7 +128,7 @@ export default function Home() {
   async function deletaFuncionario(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idFuncionario}`, {
+      const callBackPost = await api.delete(`/funcionarios/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -199,13 +201,13 @@ export default function Home() {
           />
         }
         {
-          /*formEditarOpen &&
+          formEditarOpen &&
           <EditarFuncionario 
             idFuncionario={idFuncionario}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarFuncionarios={buscarFuncionarios} 
-          />*/
+          />
         }
       </div>
     </>

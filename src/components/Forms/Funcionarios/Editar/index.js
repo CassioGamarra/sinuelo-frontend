@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'; 
@@ -7,13 +7,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';  
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import Container from '@material-ui/core/Container';
 import api from '../../../../services/api';
 import swal from 'sweetalert';
 import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../../utils/showToast'; 
-
-import { cepMask } from '../../../../utils/mask';
-
+  
 //Loader Material UI
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -32,11 +32,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1000,
     color: '#fff',
   }, 
-}));
+})); 
 
-
-
-export default function FormAdicionarFazenda(props) {
+export default function FormEditarFuncionario(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -48,50 +46,91 @@ export default function FormAdicionarFazenda(props) {
   };
   
   const [nome, setNome] = useState('');
-  const [cep, setCep] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [estado, setEstado] = useState('');
+  const [usuario, setUsuario] = useState('');
+  const [usuarioOriginal, setUsuarioOriginal] = useState('');
+  const [senha, setSenha] = useState('');
+  const [email, setEmail] = useState('');
+  const [ativo, setAtivo] = useState('');
 
   const token = localStorage.getItem('TOKEN');
 
+  useEffect(() => { 
+    buscarFuncionario(); 
+  }, []);
+
+  async function buscarFuncionario() {
+    handleOpen();
+    try {
+      const getFuncionarioById = await api.get(`/funcionarios/${props.idFuncionario}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      let dados = getFuncionarioById.data[0];  
+      setNome(dados.nome);
+      setUsuario(dados.usuario); 
+      setUsuarioOriginal(dados.usuario)
+      setEmail(dados.email);
+      setAtivo(dados.ativo)
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
   async function handleRegister(e) {
     e.preventDefault();
-
     let erros = semErros();
 
     if (erros.length > 0) {
       let msg = '';
       erros.map(elt => (
-        msg += elt
-      )
+          msg += elt
+        )
       );
       showMessage('error', msg);
     }
-    else {
-      const data = [];
+    else { 
+      const data = {
+        NOME: nome.trim(),
+        USUARIO: usuario.trim(),
+        USUARIO_ORIGINAL: usuarioOriginal.trim(),
+        SENHA: senha ? senha.trim() : null,
+        EMAIL: email.trim(),
+        ATIVO: ativo 
+      };
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
+        const callBackPost = await api.put(`/funcionarios/${props.idFuncionario}`, data, {
           headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            Authorization: "Bearer " + token
           }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
-              handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              handleClose(); 
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
-              limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              limparCampos(); 
+              props.buscarFuncionarios();
+              props.formClose();
             });
           }
         }
@@ -115,35 +154,14 @@ export default function FormAdicionarFazenda(props) {
         }
       }
     }
-  }
-
-  //Verifica o campo de CEP para realizar a busca
-  function verificaCep(cep) {
-    if (cep.length === 9) {
-      cep = cep.replace(/[^\d]+/g, '');
-      if (cep.length === 8) {
-        getCep(cep);
-      }
-    }
-  }
-
-  //Busca o cep no VIACEP
-  async function getCep(cep) {
-    handleOpen();
-    let url = 'https://viacep.com.br/ws/' + cep + '/json/';
-    const response = await fetch(url);
-    const json = await response.json();
-    handleClose();
-    if (!json.erro) {
-      setCidade(json.localidade);
-      setEstado(json.uf);
-    } else {
-      setCidade('');
-      setCidade('');
-    } 
   } 
 
   function limparCampos() {
+    setNome('');
+    setUsuario('');
+    setSenha('');
+    setEmail('');
+    setAtivo(false);
   }
 
   function semErros() {
@@ -157,7 +175,7 @@ export default function FormAdicionarFazenda(props) {
         <AppBar className={classes.appBar} elevation={0}>
           <Toolbar> 
             <Typography variant="h6" className={classes.title} >
-              CADASTRAR FAZENDA
+              EDITAR FUNCIONÁRIO
             </Typography>
           </Toolbar>
         </AppBar>
@@ -178,50 +196,60 @@ export default function FormAdicionarFazenda(props) {
                   fullWidth
                   size="small"   
                 />
-              </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
+              </Grid> 
+              <Grid item xs={12} sm={6}>
                 <TextField
-                  id="cep"
-                  label="CEP"
+                  id="usuario"
+                  label="Usuário"
                   variant="filled"
-                  value={cep}
-                  required
-                  fullWidth
+                  value={usuario}
                   required 
-                  onChange={e => setCep(cepMask(e.target.value), verificaCep(e.target.value))} 
-                  size="small" 
-                />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
-                <TextField
-                  id="cidade"
-                  label="Cidade"
-                  variant="filled"
-                  value={cidade}
-                  required 
-                  onChange={e => setCidade(e.target.value)} 
+                  onChange={e => setUsuario(e.target.value)} 
                   inputProps={{
                     maxLength: 200,
                   }}
                   fullWidth
-                  size="small"
+                  size="small"   
                 />
-              </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
+              </Grid> 
+              <Grid item xs={12} sm={6}>
                 <TextField
-                  id="estado"
-                  label="Estado" 
+                  id="senha"
+                  label="Senha"
                   variant="filled"
-                  value={estado}
-                  required 
-                  onChange={e => setEstado(e.target.value)} 
+                  value={senha} 
+                  type="password"
+                  onChange={e => setSenha(e.target.value)} 
                   inputProps={{
-                    maxLength: 2,
+                    maxLength: 200,
                   }}
                   fullWidth
-                  size="small"
+                  size="small"   
                 />
-              </Grid>
+              </Grid> 
+              <Grid item xs={12} sm={10}>
+                <TextField
+                  id="email"
+                  label="Email"
+                  variant="filled"
+                  value={email}
+                  required 
+                  type="email"
+                  onChange={e => setEmail(e.target.value)} 
+                  inputProps={{
+                    maxLength: 200,
+                  }}
+                  fullWidth
+                  size="small"   
+                />
+              </Grid> 
+              <Grid item xs={12} sm={2}> 
+                <FormControlLabel
+                  control={<Switch checked={ativo} onChange={e => setAtivo(e.target.checked)} />}
+                  label="Ativo"
+                  style={{color:'#FFFFFF'}}
+                />
+              </Grid> 
               <Grid item xs={6}>
                 <Button type="submit" className="btn-login btn-form">
                   Salvar
