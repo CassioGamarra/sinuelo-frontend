@@ -367,7 +367,7 @@ export default function FormAdicionarAnimal(props) {
                     <MenuItem value={'F'}>Fêmea</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> 
               <Grid item xs={12} md={6} lg={6} xl={6} >
                 <TextField
                   id="data-nascimento"

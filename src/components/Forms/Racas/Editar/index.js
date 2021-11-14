@@ -83,7 +83,7 @@ export default function FormEditarRaca(props) {
     }
   }
 
-  async function handleRegister(e) {
+  async function handleEdit(e) {
     e.preventDefault();
 
     let erros = semErros();
@@ -162,7 +162,7 @@ export default function FormEditarRaca(props) {
           </Toolbar>
         </AppBar>
         <Container maxWidth={false} style={{backgroundColor: '#004725', marginTop: '1em'}}>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={handleEdit}>
             <Grid container spacing={2} alignItems="flex-end">
               <Grid item xs={12}>
                 <TextField

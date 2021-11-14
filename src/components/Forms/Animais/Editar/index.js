@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'; 
@@ -8,11 +8,16 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';  
 import Container from '@material-ui/core/Container';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import FormControl from '@material-ui/core/FormControl'; 
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import api from '../../../../services/api';
 import swal from 'sweetalert';
 import { showMessage, swalRegisterError, swalRegisterSuccess } from '../../../../utils/showToast'; 
 
-import { cepMask } from '../../../../utils/mask';
+import { dateMask } from '../../../../utils/mask';
 
 //Loader Material UI
 import Backdrop from '@material-ui/core/Backdrop';
@@ -33,10 +38,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   }, 
 }));
-
-
-
-export default function FormAdicionarFazenda(props) {
+ 
+export default function FormAdicionarAnimal(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -46,15 +49,164 @@ export default function FormAdicionarFazenda(props) {
   const handleOpen = () => {
     setOpen(!open);
   };
-  
+
+  const [fazendas, setFazendas] = useState([]);
+  const [piquetes, setPiquetes] = useState([]);
+  const [racas, setRacas] = useState([]); 
+
+  const [idAnimal, setIdAnimal] = useState('');
+  const [idFazenda, setIdFazenda] = useState('');
+  const [fazenda, setFazenda] = useState('');
+  const [idPiquete, setIdPiquete] = useState('');
+  const [piquete, setPiquete] = useState('');
+  const [idRaca, setIdRaca] = useState('');
+  const [raca, setRaca] = useState(''); 
   const [nome, setNome] = useState('');
-  const [cep, setCep] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [estado, setEstado] = useState('');
+  const [sexo, setSexo] = useState(''); 
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [nomePai, setNomePai] = useState('');
+  const [nomeMae, setNomeMae] = useState('');
+  const [peso, setPeso] = useState('');
+  const [pelagem, setPelagem] = useState('');
 
   const token = localStorage.getItem('TOKEN');
 
-  async function handleRegister(e) {
+  useEffect(() => {
+    buscarAnimal();
+    buscarFazendas();  
+    buscarRacas();
+  }, []);
+
+  async function buscarAnimal() {
+    handleOpen();
+    try {
+      const getAnimalById = await api.get(`/animais/${props.idAnimal}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      let dados = getAnimalById.data[0];  
+      setIdAnimal(dados.id);
+      setIdFazenda(dados.id_fazenda);
+      setFazenda(dados.fazenda);
+      if(dados.id_piquete) {
+        await buscarPiquetes(dados.id_fazenda);
+        setIdPiquete(dados.id_piquete);
+        setPiquete(dados.piquete);
+      }
+      setIdRaca(dados.id_raca);
+      setRaca(dados.raca);
+      setNome(dados.nome);
+      setSexo(dados.sexo);
+      setDataNascimento(dados.dt_nascimento);
+      setNomePai(dados.nome_pai);
+      setNomeMae(dados.nome_mae);
+      setPeso(dados.peso);
+      setPelagem(dados.pelagem);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
+  async function buscarFazendas() {
+    handleOpen();
+    try {
+      const getFazendas = await api.get('/fazendas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setFazendas(getFazendas.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
+  async function buscarPiquetes(id) {
+    handleOpen();
+    try {
+      const getPiquetes = await api.get(`/fazendas/${id}/piquetes`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setPiquetes(getPiquetes.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  }
+
+  async function buscarRacas() {
+    handleOpen();
+    try {
+      const getRacas = await api.get('/racas', {
+        headers: { Authorization: "Bearer " + token }
+      });
+      handleClose();
+      setRacas(getRacas.data);
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          swal({
+            title: 'Atenção',
+            text: 'Sua sessão expirou, por favor, realize login novamente!',
+            icon: "info",
+            buttons: "OK"
+          }).then((willSuccess) => {
+            handleClose();
+            props.handleLogout();
+          });
+        }
+      } else {
+        handleClose();
+        showMessage('error', 'Falha na conexão');
+      }
+    }
+  } 
+  
+  async function handleEdit(e) {
     e.preventDefault();
 
     let erros = semErros();
@@ -68,30 +220,38 @@ export default function FormAdicionarFazenda(props) {
       showMessage('error', msg);
     }
     else {
-      const data = [];
+      const data = {
+        ID_FAZENDA: idFazenda,
+        ID_PIQUETE: idPiquete !== '' ? idPiquete : null,
+        ID_RACA: idRaca,
+        NOME: nome.trim(),
+        SEXO: sexo,
+        DATA_NASCIMENTO: dataNascimento,
+        NOME_PAI: nomePai.trim(),
+        NOME_MAE: nomeMae.trim(),
+        PESO: peso,
+        PELAGEM: pelagem.trim()
+      }; 
       handleOpen();
       try {
-        const callBackPost = await api.post('/postagem', data, {
-          headers: {
-            Authorization: "Bearer " + token,
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
-          }
+        const callBackPost = await api.put(`/animais/${idAnimal}`, data, {
+          headers: { Authorization: "Bearer " + token }
         });
         if (callBackPost) {
           if (callBackPost.data.error) {
             swalRegisterError(callBackPost, "OK").then((willSuccess) => {
               handleClose();
               limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              props.formClose();
+              props.buscarAnimais();
             });
           }
           if (callBackPost.data.cadastrado) {
             swalRegisterSuccess(callBackPost, "OK").then((willSuccess) => {
               handleClose();
               limparCampos();
-              props.handleDialogClose();
-              props.buscarPosts();
+              props.formClose();
+              props.buscarAnimais();
             });
           }
         }
@@ -115,32 +275,6 @@ export default function FormAdicionarFazenda(props) {
         }
       }
     }
-  }
-
-  //Verifica o campo de CEP para realizar a busca
-  function verificaCep(cep) {
-    if (cep.length === 9) {
-      cep = cep.replace(/[^\d]+/g, '');
-      if (cep.length === 8) {
-        getCep(cep);
-      }
-    }
-  }
-
-  //Busca o cep no VIACEP
-  async function getCep(cep) {
-    handleOpen();
-    let url = 'https://viacep.com.br/ws/' + cep + '/json/';
-    const response = await fetch(url);
-    const json = await response.json();
-    handleClose();
-    if (!json.erro) {
-      setCidade(json.localidade);
-      setEstado(json.uf);
-    } else {
-      setCidade('');
-      setCidade('');
-    } 
   } 
 
   function limparCampos() {
@@ -157,14 +291,102 @@ export default function FormAdicionarFazenda(props) {
         <AppBar className={classes.appBar} elevation={0}>
           <Toolbar> 
             <Typography variant="h6" className={classes.title} >
-              CADASTRAR FAZENDA
+              CADASTRAR ANIMAL 
             </Typography>
           </Toolbar>
         </AppBar>
         <Container maxWidth={false} style={{backgroundColor: '#004725', marginTop: '1em'}}>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={handleEdit}>
             <Grid container spacing={2} alignItems="flex-end">
-              <Grid item xs={12}>
+              <Grid item xs={12} md={4} lg={4} xl={4} >
+                <FormControl className={classes.formControl} variant="filled" fullWidth required>
+                  <Autocomplete
+                    id="fazendas"
+                    options={fazendas}
+                    getOptionLabel={(option) => option.nome}
+                    getOptionSelected={(option) => option.id}
+                    onChange={(event, value) => {
+                      if (value) {
+                        setIdFazenda(value.id);
+                        buscarPiquetes(value.id);
+                      }
+                    }}
+                    size="small"
+                    inputValue={fazenda} //Valor que armazena no textField
+                    onInputChange={(event, input) => {
+                      setFazenda(input);
+                    }}
+                    required
+                    renderInput={(params) =>
+                      <TextField
+                        {...params}
+                        label="Selecionar Fazenda"
+                        variant="filled"
+                        required
+                      />
+                    } 
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4} lg={4} xl={4} >
+                <FormControl className={classes.formControl} variant="filled" fullWidth required>
+                  <Autocomplete
+                    id="piquetes"
+                    options={piquetes}
+                    getOptionLabel={(option) => option.nome}
+                    getOptionSelected={(option) => option.id}
+                    onChange={(event, value) => {
+                      if (value) {
+                        setIdPiquete(value.id);
+                      } else {
+                        setIdPiquete('');
+                      }
+                    }}
+                    size="small"
+                    inputValue={piquete} //Valor que armazena no textField
+                    onInputChange={(event, input) => {
+                      setPiquete(input)
+                    }} 
+                    renderInput={(params) =>
+                      <TextField
+                        {...params}
+                        label="Selecionar Piquete"
+                        variant="filled" 
+                      />
+                    } 
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4} lg={4} xl={4} >
+                <FormControl className={classes.formControl} variant="filled" fullWidth required>
+                  <Autocomplete
+                    id="racas"
+                    options={racas}
+                    getOptionLabel={(option) => option.nome}
+                    getOptionSelected={(option) => option.id}
+                    onChange={(event, value) => {
+                      if (value) {
+                        setIdRaca(value.id);
+                      }
+                    }}
+                    size="small"
+                    inputValue={raca} //Valor que armazena no textField
+                    onInputChange={(event, input) => {
+                      setRaca(input)
+                    }}
+                    required
+                    renderInput={(params) =>
+                      <TextField
+                        {...params}
+                        label="Selecionar Raça"
+                        variant="filled"
+                        required
+                      />
+                    } 
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} >
                 <TextField
                   id="nome"
                   label="Nome"
@@ -178,28 +400,42 @@ export default function FormAdicionarFazenda(props) {
                   fullWidth
                   size="small"   
                 />
-              </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
+              </Grid> 
+              <Grid item xs={12} md={6} lg={6} xl={6} >
+                <FormControl className={classes.formControl} variant="filled" required fullWidth size="small" >
+                  <InputLabel id="sexo-label">Sexo</InputLabel>
+                  <Select
+                    labelId="sexo-label"
+                    id="sexo"
+                    value={sexo} 
+                    onChange={e => setSexo(e.target.value)}
+                    required
+                  > 
+                    <MenuItem value={'M'}>Macho</MenuItem>
+                    <MenuItem value={'F'}>Fêmea</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid> 
+              <Grid item xs={12} md={6} lg={6} xl={6} >
                 <TextField
-                  id="cep"
-                  label="CEP"
+                  id="data-nascimento"
+                  label="Data de Nascimento"
                   variant="filled"
-                  value={cep}
-                  required
-                  fullWidth
+                  value={dataNascimento}
                   required 
-                  onChange={e => setCep(cepMask(e.target.value), verificaCep(e.target.value))} 
-                  size="small" 
+                  onChange={e => setDataNascimento(dateMask(e.target.value))}  
+                  fullWidth
+                  size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6} xl={6} >
+              <Grid item xs={12} md={6} lg={6} xl={6} >
                 <TextField
-                  id="cidade"
-                  label="Cidade"
+                  id="nome-pai"
+                  label="Nome do Pai"
                   variant="filled"
-                  value={cidade}
+                  value={nomePai}
                   required 
-                  onChange={e => setCidade(e.target.value)} 
+                  onChange={e => setNomePai(e.target.value)} 
                   inputProps={{
                     maxLength: 200,
                   }}
@@ -207,16 +443,47 @@ export default function FormAdicionarFazenda(props) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={12} md={3} lg={3} xl={3} >
+              <Grid item xs={12} md={6} lg={6} xl={6} >
                 <TextField
-                  id="estado"
-                  label="Estado" 
+                  id="nome-mae"
+                  label="Nome da Mãe"
                   variant="filled"
-                  value={estado}
+                  value={nomeMae}
                   required 
-                  onChange={e => setEstado(e.target.value)} 
+                  onChange={e => setNomeMae(e.target.value)} 
                   inputProps={{
-                    maxLength: 2,
+                    maxLength: 200,
+                  }}
+                  fullWidth
+                  size="small"
+                />
+              </Grid> 
+              <Grid item xs={12} md={6} lg={6} xl={6} >
+                <TextField
+                  id="peso"
+                  label="Peso"
+                  variant="filled"
+                  value={peso}
+                  required 
+                  type="number"
+                  onChange={e => setPeso(e.target.value)} 
+                  inputProps={{
+                    max: 5000,
+                  }}
+                  fullWidth
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6} lg={6} xl={6} >
+                <TextField
+                  id="pelagem"
+                  label="Pelagem"
+                  variant="filled"
+                  value={pelagem}
+                  required 
+                  onChange={e => setPelagem(e.target.value)} 
+                  inputProps={{
+                    maxLength: 200,
                   }}
                   fullWidth
                   size="small"

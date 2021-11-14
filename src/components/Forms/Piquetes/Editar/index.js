@@ -120,7 +120,7 @@ export default function FormEditarPiquete(props) {
     }
   }
 
-  async function handleRegister(e) {
+  async function handleEdit(e) {
     e.preventDefault();
 
     let erros = semErros();
@@ -141,7 +141,7 @@ export default function FormEditarPiquete(props) {
       }; 
       handleOpen();
       try {
-        const callBackPost = await api.put(`/piquetes/${props.idPiquete}`, data, {
+        const callBackPost = await api.put(`/piquetes/${idPiquete}`, data, {
           headers: {
             Authorization: "Bearer " + token
           }
@@ -200,7 +200,7 @@ export default function FormEditarPiquete(props) {
           </Toolbar>
         </AppBar>
         <Container maxWidth={false} style={{backgroundColor: '#004725', marginTop: '1em'}}>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={handleEdit}>
             <Grid container spacing={2} alignItems="flex-end">
               <Grid item xs={12}>
                 <FormControl className={classes.formControl} variant="filled" fullWidth required>
