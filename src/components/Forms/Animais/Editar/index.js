@@ -83,7 +83,6 @@ export default function FormAdicionarAnimal(props) {
       const getAnimalById = await api.get(`/animais/${props.idAnimal}`, {
         headers: { Authorization: "Bearer " + token }
       });
-      handleClose();
       let dados = getAnimalById.data[0];  
       setIdAnimal(dados.id);
       setIdFazenda(dados.id_fazenda);
@@ -101,7 +100,8 @@ export default function FormAdicionarAnimal(props) {
       setNomePai(dados.nome_pai);
       setNomeMae(dados.nome_mae);
       setPeso(dados.peso);
-      setPelagem(dados.pelagem);
+      setPelagem(dados.pelagem); 
+      handleClose();
     } catch (err) {
       if (err.response) {
         if (err.response.status === 401) {
