@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   }, 
 })); 
 
-export default function FormAdicionarBrinco(props) {
+export default function FormAdicionarMedicamento(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);

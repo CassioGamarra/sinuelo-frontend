@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
 import AdicionarAlerta from '../../../components/Forms/Alertas/Adicionar';
+import EditarAlerta from '../../../components/Forms/Alertas/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -108,7 +109,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir o funcionário?",
+      title: "Deseja excluir o alerta?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -116,15 +117,15 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        deletaFuncionario(id);
+        deletaAlerta(id);
       }
     });
   }
 
-  async function deletaFuncionario(id) {  
+  async function deletaAlerta(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idAlerta}`, {
+      const callBackPost = await api.delete(`/alertas/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -197,13 +198,13 @@ export default function Home() {
           />
         }
         {
-          /*formEditarOpen &&
-          <EditarFuncionario 
+          formEditarOpen &&
+          <EditarAlerta 
             idAlerta={idAlerta}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarAlertas={buscarAlertas} 
-          />*/
+          />
         }
       </div>
     </>

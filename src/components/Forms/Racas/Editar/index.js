@@ -56,13 +56,13 @@ export default function FormEditarRaca(props) {
   async function buscarRaca() {
     handleOpen();
     try {
-      const getRacaById = await api.get(`/racas/${props.idRaca}`, {
+      const getDadosRaca = await api.get(`/racas/${props.idRaca}`, {
         headers: { Authorization: "Bearer " + token }
       });
       handleClose();
-      let dados = getRacaById.data[0];  
+      let dados = getDadosRaca.data[0];  
       setNome(dados.nome); 
-      setNomeOriginal(dados.nome) 
+      setNomeOriginal(dados.nome); 
     } catch (err) {
       if (err.response) {
         if (err.response.status === 401) {

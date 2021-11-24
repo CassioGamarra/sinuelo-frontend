@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
 import AdicionarBrinco from '../../../components/Forms/Brincos/Adicionar';
+import EditarBrinco from '../../../components/Forms/Brincos/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -198,13 +199,13 @@ export default function Home() {
           />
         }
         {
-          /*formEditarOpen &&
-          <EditarFuncionario 
+          formEditarOpen &&
+          <EditarBrinco 
             idBrinco={idBrinco}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarBrincos={buscarBrincos} 
-          />*/
+          />
         }
       </div>
     </>

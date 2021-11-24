@@ -188,7 +188,7 @@ export default function Home() {
           (!formCadastroOpen && !formEditarOpen) &&
           <CustomMaterialTable
             titulo={'Animais'}
-            msgSemDados={'Nenhuma animal cadastrada'}
+            msgSemDados={'Nenhum animal cadastrado'}
             colunas={colunas} 
             data={data}
             add={{ tooltip: 'Adicionar Animal', acao: handleFormCadastroChange }}

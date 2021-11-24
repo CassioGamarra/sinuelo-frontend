@@ -112,21 +112,21 @@ export default function Header(props) {
                 <p>INÍCIO</p>
               </Button>
             </Link>  
-            <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
+            {/* <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
               <Button className={window.location.href.split('/')[4] === 'perfil' ? classes.btnSelected : classes.btn}>
                 <PerfilIcon />
                 <p>PERFIL</p>
               </Button>
-            </Link>  
+            </Link>  */} 
             <Button className={classes.btn} onClick={props.logout} >
               <SairIcon />
               <p>SAIR</p>
             </Button>
           </div>
 
-          <div className={classes.sectionMobile} style={{ color: "#021931" }}>
+          <div className={classes.sectionMobile} style={{ color: "#ffffff" }}>
             <IconButton
-              style={{ color: "#021931" }}
+              style={{ color: "#ffffff" }}
               aria-label="Abrir menu"
               edge="start"
               onClick={handleDrawerToggle}
@@ -153,7 +153,7 @@ export default function Header(props) {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <Button onClick={handleDrawerToggle} className={classes.closeMenuButton}  >
+            <Button onClick={handleDrawerToggle} className={classes.btn} style={{ width: '100%', justifyContent: "left" }} >
               <CloseIcon style={{ color: '#FFFFFF', minWidth: '56px' }} />
             </Button>  
             <Link to={'/'+window.location.href.split('/')[3]+'/home'} >
@@ -162,12 +162,12 @@ export default function Header(props) {
                 <p>INÍCIO</p>
               </Button>
             </Link>  
-            <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
+            {/*  <Link to={'/'+window.location.href.split('/')[3]+'/perfil'} >
               <Button className={window.location.href.split('/')[4] === 'perfil' ? classes.btnSelected : classes.btn} style={{ width: '100%', justifyContent: "left" }}>
                 <PerfilIcon style={{ minWidth: '56px' }}/>
                 <p>PERFIL</p>
               </Button>
-            </Link>  
+            </Link>  */} 
             <Button className={classes.btn} onClick={props.logout} style={{ width: '100%', justifyContent: "left" }}>
               <SairIcon style={{ minWidth: '56px' }} />
               <p>SAIR</p>

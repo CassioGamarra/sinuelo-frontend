@@ -13,7 +13,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarDoenca from '../../../components/Forms/Doencas/Adicionar';
+import AdicionarDoenca from '../../../components/Forms/Doencas/Adicionar'; 
+import EditarDoenca from '../../../components/Forms/Doencas/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -81,11 +82,11 @@ export default function Home() {
   async function buscarDoencas() {
     handleOpen();
     try {
-      const getBrincos = await api.get('/doencas', {
+      const getDoencas = await api.get('/doencas', {
         headers: { Authorization: "Bearer " + token }
       });
       handleClose();
-      setData(getBrincos.data);
+      setData(getDoencas.data);
     } catch (err) {
       if (err.response) {
         if (err.response.status === 401) {
@@ -108,7 +109,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir o funcionário?",
+      title: "Deseja excluir a doença?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -116,15 +117,15 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        deletaFuncionario(id);
+        deletaDoenca(id);
       }
     });
   }
 
-  async function deletaFuncionario(id) {  
+  async function deletaDoenca(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idDoenca}`, {
+      const callBackPost = await api.delete(`/doencas/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -176,7 +177,7 @@ export default function Home() {
           <>
             <CustomMaterialTable
               titulo={'Doenças'}
-              msgSemDados={'Nenhum doença cadastrado'}
+              msgSemDados={'Nenhum doença cadastrada'}
               colunas={colunas} 
               data={data}
               add={{tooltip: 'Adicionar Doença', acao: handleFormCadastroChange}}
@@ -197,13 +198,13 @@ export default function Home() {
           />
         }
         {
-          /*formEditarOpen &&
-          <EditarFuncionario 
+          formEditarOpen &&
+          <EditarDoenca 
             idDoenca={idDoenca}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarDoencas={buscarDoencas} 
-          />*/
+          />
         }
       </div>
     </>

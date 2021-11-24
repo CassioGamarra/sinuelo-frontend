@@ -13,7 +13,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarAlerta from '../../../components/Forms/Vacinas/Adicionar';
+import AdicionarVacina from '../../../components/Forms/Vacinas/Adicionar';
+import EditarVacina from '../../../components/Forms/Vacinas/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -70,7 +71,7 @@ export default function Home() {
 
   const [data, setData] = useState([]);
 
-  const [idVacina, setIdAlerta] = useState(''); 
+  const [idVacina, setIdVacina] = useState(''); 
 
   function handleLogout() {
     logout();
@@ -111,7 +112,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir o funcionário?",
+      title: "Deseja excluir a vacina?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -119,15 +120,15 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        deletaFuncionario(id);
+        deletaVacina(id);
       }
     });
   }
 
-  async function deletaFuncionario(id) {  
+  async function deletaVacina(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idVacina}`, {
+      const callBackPost = await api.delete(`/vacinas/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -179,11 +180,11 @@ export default function Home() {
           <>
             <CustomMaterialTable
               titulo={'Vacinas'}
-              msgSemDados={'Nenhum vacina cadastrado'}
+              msgSemDados={'Nenhuma vacina cadastrada'}
               colunas={colunas} 
               data={data}
               add={{tooltip: 'Adicionar Vacina', acao: handleFormCadastroChange}}
-              editar={{tooltip: 'Editar Vacina', acao: handleFormEditarChange, setId: setIdAlerta}}
+              editar={{tooltip: 'Editar Vacina', acao: handleFormEditarChange, setId: setIdVacina}}
               excluir={{tooltip: 'Excluir Vacina', acao: handleDelete}}
             />
             <Backdrop className={classes.backdrop} open={open}>
@@ -193,20 +194,20 @@ export default function Home() {
         }
         {
           formCadastroOpen &&
-          <AdicionarAlerta 
+          <AdicionarVacina 
             formClose={handleFormCadastroChange} 
             handleLogout={handleLogout}
             buscarVacinas={buscarVacinas}
           />
         }
         {
-          /*formEditarOpen &&
-          <EditarFuncionario 
+          formEditarOpen &&
+          <EditarVacina 
             idVacina={idVacina}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarVacinas={buscarVacinas} 
-          />*/
+          />
         }
       </div>
     </>

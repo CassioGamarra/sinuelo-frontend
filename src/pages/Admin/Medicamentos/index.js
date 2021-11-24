@@ -13,7 +13,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CustomMaterialTable from '../../../components/CustomMaterialTable';
  
-import AdicionarMedicamento from '../../../components/Forms/Medicamentos/Adicionar';
+import AdicionarMedicamento from '../../../components/Forms/Medicamentos/Adicionar'; 
+import EditarMedicamento from '../../../components/Forms/Medicamentos/Editar';
   
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -109,7 +110,7 @@ export default function Home() {
 
   async function handleDelete(id) {
     swal({
-      title: "Deseja excluir o funcionário?",
+      title: "Deseja excluir o medicamento?",
       icon: "warning", 
       buttons: {
         confirm: "Sim",
@@ -117,15 +118,15 @@ export default function Home() {
       }
     }).then((excluir) => {
       if (excluir) {
-        deletaFuncionario(id);
+        deletaMedicamento(id);
       }
     });
   }
 
-  async function deletaFuncionario(id) {  
+  async function deletaMedicamento(id) {  
     handleOpen();
     try {
-      const callBackPost = await api.delete(`/funcionarios/${idMedicamento}`, {
+      const callBackPost = await api.delete(`/medicamentos/${id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -198,13 +199,13 @@ export default function Home() {
           />
         }
         {
-          /*formEditarOpen &&
-          <EditarFuncionario 
+          formEditarOpen &&
+          <EditarMedicamento 
             idMedicamento={idMedicamento}
             formClose={handleFormEditarChange}
             handleLogout={handleLogout}
             buscarMedicamentos={buscarMedicamentos} 
-          />*/
+          />
         }
       </div>
     </>

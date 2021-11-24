@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   }, 
 }));
  
-export default function FormAdicionarAnimal(props) {
+export default function FormEditarAnimal(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -291,7 +291,7 @@ export default function FormAdicionarAnimal(props) {
         <AppBar className={classes.appBar} elevation={0}>
           <Toolbar> 
             <Typography variant="h6" className={classes.title} >
-              CADASTRAR ANIMAL 
+              EDITAR ANIMAL 
             </Typography>
           </Toolbar>
         </AppBar>
