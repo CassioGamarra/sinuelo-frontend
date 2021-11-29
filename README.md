@@ -30,8 +30,10 @@ npm run dev
 ```
 
 O usuário de acesso padrão é: 
+```bash
 Usuário: administrador
 senha: 123123
+```
 
 ## Dúvidas
 Em caso de dúvidas, envie um e-mail para [cassio.gamarra@ufn.edu.br](mailto:cassio.gamarra@ufn.edu.br) 
